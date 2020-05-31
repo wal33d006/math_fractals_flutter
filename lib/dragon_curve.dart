@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class DragonPainter extends CustomPainter {
+  /* We only need the starting point and the number of iterations we want to run.
+   * The ending point will be calculated inside the function.
+   */
   int xStart, yStart, iteration;
   Color color;
 
@@ -10,20 +13,30 @@ class DragonPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    /* This function returns a list of 1s and -1s which indicates the angle
+    *  of turning the next iteration.
+    * */
     var turns = getSequence(iteration);
 
+    // We define the starting angle and the side, which is needed to calculate
+    // the second offset of each line.
     var startingAngle = iteration * (pi / 4);
     var side = 400 / pow(2, iteration / 2.0);
 
+    /* The second offset is created using the X and Y coordinates of the first
+    *  offset.
+    * */
     double angle = startingAngle;
     int x1 = xStart, y1 = yStart;
     int x2 = x1 + (cos(angle) * side).toInt();
     int y2 = y1 + (sin(angle) * side).toInt();
     var p1 = Offset(x1.toDouble(), y1.toDouble());
     var p2 = Offset(x2.toDouble(), y2.toDouble());
+    // This draws the first line.
     canvas.drawLine(p1, p2, Paint()..color = Colors.white);
     x1 = x2;
     y1 = y2;
+    // The loop which draws the whole previous iteration (rotated) every time
     for (int turn in turns) {
       Color c = color == Colors.transparent
           ? colors[Random().nextInt(colors.length)].color
